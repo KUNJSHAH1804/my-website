@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Prakash Kiran - Products</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    .sticky-header, .sticky-tabs {
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 1000;
+      padding: 10px 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .sticky-tabs {
+      top: 70px;
+      padding: 10px 20px 0;
+    }
+
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .header-title {
+      font-size: 30px;
+      font-weight: bold;
+      color: #1d3557;
+    }
+
+    .search-container {
+      flex: 1;
+      position: relative;
+      max-width: 500px;
+    }
+
+    .search-container input {
+      width: 100%;
+      padding: 8px 30px 8px 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    .search-container button {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      color: #888;
+      display: none;
+    }
+
+    .cart-link {
+      font-size: 18px;
+      color: #2a9d8f;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .tabs button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      background-color: #2a9d8f;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .tabs button.active {
+      background-color: #1d3557;
+    }
+
+    .product-list {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .product-card {
+      background: white;
+      padding: 16px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .product-card h3 {
+      margin: 0 0 10px;
+      color: #333;
+      font-size: 18px;
+    }
+
+    .product-card select,
+    .product-card button {
+      width: 100%;
+      margin-top: 8px;
+      padding: 6px;
+      font-size: 14px;
+    }
+
+    .product-card .price {
+      font-weight: bold;
+      color: #2a9d8f;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sticky-header">
+    <div class="header-row">
+      <div class="header-title">Our Products</div>
+      <div class="search-container">
+        <input type="text" id="search" placeholder="Search products...">
+        <button id="clear-search">❌</button>
+      </div>
+      <a class="cart-link" href="cartt.html">🛒 Cart</a>
+    </div>
+  </div>
+
+  <div class="sticky-tabs">
+    <div class="tabs">
+      <button class="tab active" data-cat="pvc">PVC</button>
+      <button class="tab" data-cat="upvc">UPVC</button>
+      <button class="tab" data-cat="cpvc">CPVC</button>
+      <button class="tab" data-cat="swr">SWR</button>
+      <button class="tab" data-cat="others">Others</button>
+    </div>
+  </div>
+
+  <div class="product-list" id="product-list"></div>
+
+  <script>
+    const allProducts = {
+      pvc: [{
+      name: "Socket Fabricated (4kg)",
+      sizes: { "2": 22.4, "2½": 33.9, "3": 47.75, "4": 79.8, "5": 147.35, "6": 240, "7": 244.8, "8": 456.2}
+    },
+    {
+      name: "Socket Fabricated (6kg)",
+      sizes: { "2": 30.9, "2½": 48.85, "3": 73, "4": 137.45, "5": 259, "6": 424.9, "7": 435.6, "8": 690.1}
+    },
+    {
+      name: "Socket Fabricated (10kg)",
+      sizes: { "1/2": 3.8, "3/4": 4.45, "1": 7.45}
+    },
+    {
+      name: "Bend Fabricated (4kg)",
+      sizes: { "2": 60.45, "2½": 90.75, "3": 151, "4": 244, "5": 672.5, "6": 1040.65, "7": 1408.4, "8": 1980.25}
+    },
+    {
+      name: "Elbow (16kg)",
+      sizes: { "2½": 133.5 }
+    },
+    {
+      name: "Elbow (10kg)",
+      sizes: { "2½": 95 }
+    },
+    {
+      name: "Elbow (6kg)",
+      sizes: { "2": 54.8, "2½": 76.8, "3": 125.55, "4": 208.5, "7": 853.15 }
+    },
+    {
+      name: "Elbow (4kg)",
+      sizes: { "1/2": 5.7, "3/4": 8.9, "1": 12.2, "1 1/4": 18.75, "1 1/2": 27.9, "2": 53.2, "2½": 65.4, "3": 100, "4": 159.6, "5": 252.3, "6": 389.6, "8": 923.2 }
+    },
+    {
+      name: "Elbow (aqua)",
+      sizes: { "1 1/4": 16.65, "1 1/2": 22.3, "2": 31, "2½": 42.35, "3": 58.95, "4": 87.5 }
+    },
+    {
+      name: "Bend (45°)",
+      sizes: { "1 1/4": 19.15, "1 1/2": 29, "2": 42.4, "2½": 59.6, "3": 106.4, "4": 115.1, "6": 502 }
+    },
+    {
+      name: "Tee (16kg)",
+      sizes: { "2½": 187.15 }
+    },
+    {
+      name: "Tee (10kg)",
+      sizes: { "2½": 121.55 }
+    },
+    {
+      name: "Tee (6kg)",
+      sizes: { "2": 73, "2½": 102.15, "3": 164.9, "4": 276.6, "7": 1106.75 }
+    },
+    {
+      name: "Tee (4kg)",
+      sizes: { "1/2": 7.35, "3/4": 11.5, "1": 16, "1 1/4": 23.5, "1 1/2": 38.3, "2": 67.4, "2½": 93.65, "3": 132.45, "4": 193.4, "5": 357.9, "6": 508.5, "8": 1286 }
+    },
+    {
+      name: "Tee (aqua)",
+      sizes: { "2": 40.35, "2½": 55.6, "3": 78.6, "4": 130.75 }
+    },
+    {
+      name: "Cross Tee",
+      sizes: { "2": 93.6, "2½": 143.15 }
+    },
+    {
+      name: "MTA",
+      sizes: { "1/2": 4.7, "3/4": 6.7, "1": 8.9, "1 1/4": 13.6, "1 1/2": 23.1, "2": 29.8, "2½": 48.95, "3": 73.95, "4": 119.15 }
+    },
+    {
+      name: "FTA",
+      sizes: { "1/2": 5.35, "3/4": 7.25, "1": 9.65, "1 1/4": 14.2, "1 1/2": 23.1, "2": 40.8, "2½": 53.2, "3": 95.75, "4": 169.7 }
+    },
+    {
+      name: "One side threaded elbow",
+      sizes: { "2": 85.1, "2½": 103.2, "3": 200 }
+    },
+    {
+      name: "RMTA",
+      sizes: { "2x2½": 51.85, "3x2": 60.75, "3x2½": 62.15 }
+    },
+    {
+      name: "RFTA",
+      sizes: { "2x2½": 54.5, "3x2": 74, "3x2½": 92.45, "4x3": 165.15 }
+    },
+    {
+      name: "Endcap (Threaded)",
+      sizes: { "1/2": 4.3, "3/4": 5.3, "1": 7.95, "1 1/4": 12.5, "1 1/2": 17.15, "2": 23.4, "2½": 38.15, "3": 53.2, "4": 88.1 }
+    },
+    {
+      name: "Reducing Tee",
+      sizes: { "2x2½": 114.9, "3x2": 170.2, "3x2½": 166.65, "4x2": 281.25, "4x2½": 272.9, "4x3": 298 }
+    },
+    {
+      name: "Service Saddle",
+      sizes: { "2x½": 95.75, "2x¾": 95.75, "2x1": 95.75, "2½x½": 123.45, "2½x¾": 123.45, "2½x1": 123.45, "3x½": 145.9, "3x¾": 145.9, "3x1": 145.9, "4x½": 187.5, "4x¾": 187.5, "4x1": 187.5, "5x½": 202.1, "6x½": 234 }
+    },
+    {
+      name: "Reducer",
+      sizes: { "¾x½": 6.4, "1x½": 8.5, "1x¾": 7.95, "1¼x1": 12, "1½x1": 17.95, "1½x1¼": 19.95, "2x1": 27.5, "2x1¼": 29.45, "2x1½": 29.85, "2½x1": 43.9, "2½x1¼": 38.95, "2½x1½": 41.95, "2½x2": 43.9, "3x2": 67.2, "3x2½": 70, "4x2": 80.85, "4x2½": 87.25, "4x3": 95.75, "5x2½": 132.75, "5x3": 143.95, "5x4": 143.95, "6x2½": 179.6, "6x3": 181, "6x4": 195.45, "6x5": 216.65 }
+    },
+    {
+      name: "Tail piece (6kg)",
+      sizes: { "2½": 40.95, "3": 74, "4": 118.9, "5": 178.6 }
+    },
+    {
+      name: "Tail piece (4kg)",
+      sizes: { "2": 29.85, "2½": 38.95, "3": 56.2, "4": 83.95 }
+    },
+    {
+      name: "Single Wye",
+      sizes: { "2½": 185, "3": 277.4, "4": 429.2 }
+    },
+    {
+      name: "Coupler Moulded",
+      sizes: { "1/2": 5.1, "3/4": 6.95, "1": 11, "1 1/4": 13.9, "1 1/2": 19.6 }
+    },
+    {
+      name: "Endcap (Plain)",
+      sizes: { "1/2": 3.6, "3/4": 4.9, "1": 7.45, "1 1/4": 10.65, "1 1/2": 16, "2": 23.2, "2½": 33, "3": 58.45, "4": 77.2, "5": 102.15, "6": 137.4, "7": 192.8, "8": 388.3 }
+    },
+    {
+      name: "Solution",
+      sizes: { "25ml": 8.5, "50ml": 16, "100ml": 27.5 }
+    },
+    {
+      name: "Bend (6kg)",
+      sizes: { "1/2": 8.4, "3/4": 10.85, "1": 19.15, "1 1/4": 29.5, "1 1/2": 38.8, "2": 67.4, "2½": 127.4, "3": 201.1, "4": 378.15 }
+    },
+    {
+      name: "Quick Fix Coupler Rubber (4kg)",
+      sizes: { "2": 121.8, "2½": 167.6, "3": 220, "4": 337.35, "5": 567.35, "6": 772 }
+    },
+    {
+      name: "Quick Fix Coupler Rubber (4kg)",
+      sizes: { "2": 90.4, "2½": 133.3, "3": 184.15, "4": 284.7, "5": 517.7, "6": 717 }
+    }
+      ],
+      upvc: [
+  {
+    name: "UPVC PIPES",
+    sizes: { "1/2": 95, "3/4": 125, "1": 200, "1¼": 507, "1½": 604, "2": 822, "2½": 1267, "3": 1665, "4": 2422, "6": 4632 }
+  },
+  {
+    name: "UPVC Elbow",
+    sizes: { "1/2": 11.6, "3/4": 16.7, "1": 27.5, "1¼": 41.3, "1½": 53.2, "2": 84.9, "2½": 153, "3": 252.1, "4": 423.1 }
+  },
+  {
+    name: "UPVC Tee",
+    sizes: { "1/2": 15.2, "3/4": 21.8, "1": 35.5, "1¼": 54.5, "1½": 76, "2": 116.5, "2½": 220.4, "3": 322.2, "4": 544.8 }
+  },
+  {
+    name: "UPVC Socket",
+    sizes: { "1/2": 8.9, "3/4": 12.7, "1": 18, "1¼": 28, "1½": 35.2, "2": 51.7, "2½": 98.8, "3": 144.4, "4": 245.7 }
+  },
+  {
+    name: "UPVC Shoe",
+    sizes: { "1/2": 11.4, "3/4": 16.4, "1": 26.6, "1¼": 38, "1½": 48.1, "2": 76, "2½": 155.5, "3": 233.5 }
+  },
+  {
+    name: "UPVC Endcap",
+    sizes: { "1/2": 6.3, "3/4": 8.9, "1": 13.3, "1¼": 21.5, "1½": 25.3, "2": 40.5, "2½": 69.7, "3": 100, "4": 178 }
+  },
+  {
+    name: "UPVC Union",
+    sizes: { "1/2": 27.9, "3/4": 36.7, "1": 51, "1¼": 77.3, "1½": 105.1, "2": 155.8, "2½": 1445, "3": 555 }
+  },
+  {
+    name: "UPVC MTA (Plastic)",
+    sizes: { "1/2": 6.6, "3/4": 10.1, "1": 14.2, "1¼": 23, "1½": 29.1, "2": 48.1, "2½": 89, "3": 142.5, "4": 215.5 }
+  },
+  {
+    name: "UPVC FTA (Plastic)",
+    sizes: { "1/2": 8.9, "3/4": 11.4, "1": 17.7, "1¼": 25.3, "1½": 32.9, "2": 50.7, "2½": 101.3, "3": 146.9, "4": 239.4 }
+  },
+  {
+    name: "Bend 90°",
+    sizes: { "1/2": 29.1, "3/4": 40.5, "1": 63.3, "1¼": 101.3, "1½": 136.8, "2": 205.2, "2½": 362.2, "3": 540 }
+  },
+  {
+    name: "Tank Connection (Short)",
+    sizes: { "1/2": 27.9, "3/4": 38, "1": 49.1, "1¼": 77.8, "1½": 86.7, "2": 133.3 }
+  },
+  {
+    name: "Tank Connection (Socket Type)",
+    sizes: { "1/2": 34.7, "3/4": 44.4, "1": 55.6, "1¼": 77.8, "1½": 86.7, "2": 153 }
+  },
+  {
+    name: "UPVC Stepover Bend",
+    sizes: { "1/2": 40.5, "3/4": 53.2, "1": 81.1, "1¼": 124.4, "1½": 144.4, "2": 244.4 }
+  },
+  {
+    name: "UPVC Cross Tee",
+    sizes: { "1/2": 19, "3/4": 34, "1": 56.4 }
+  },
+  {
+    name: "UPVC Pipe Clip",
+    sizes: { "1/2": 2.5, "3/4": 3.8, "1": 3.8, "1¼": 7.6, "1½": 10.1, "2": 16.5 }
+  },
+  {
+    name: "UPVC NRV",
+    sizes: { "1": 414 }
+  },
+  {
+    name: "Threaded Plug",
+    sizes: { "1/2": 3.8 }
+  },
+  {
+    name: "Long butch",
+    sizes: { "1/2": 5.5 }
+  },
+  {
+    name: "UPVC Reducing Bush",
+    sizes: {
+      "¾x½": 5.1, "1x½": 9.3, "1x¾": 7.6, "1¼x½": 16.5, "1¼x¾": 16.9, "1¼x1": 12.2,
+      "1½x½": 21.5, "1½x¾": 20.3, "1½x1": 19, "1½x1¼": 13.3, "2x½": 35.5, "2x¾": 35.5,
+      "2x1": 36.5, "2x1¼": 35.6, "2x1½": 27.1, "2½x1¼": 58.2, "2½x1½": 55.75, "2½x2": 44.4,
+      "3x2": 121.6, "3x2½": 93.3, "4x2": 198.9, "4x2½": 209, "4x3": 155.6
+    }
+  },
+  {
+    name: "UPVC Brass MTA",
+    sizes: { "1/2": 88.9, "3/4": 133.3, "1": 228.3, "1¼": 333.3, "1½": 435.8, "2": 566.7, "2½": 1270, "3": 1850 }
+  },
+  {
+    name: "UPVC Reducing Brass MTA",
+    sizes: { "¾x½": 97.8, "1x½": 117.8, "1x¾": 144.4 }
+  },
+  {
+    name: "UPVC Brass Tee",
+    sizes: { "1/2": 81.4, "3/4": 120.1, "1": 237.9 }
+  },
+  {
+    name: "UPVC Reducer",
+    sizes: {
+      "¾x½": 11.4, "1x½": 16.5, "1x¾": 17.5, "1¼x½": 27.9, "1¼x¾": 26.7, "1¼x1": 31.7,
+      "1½x½": 32.9, "1½x¾": 33, "1½x1": 35.5, "1½x1¼": 36.7, "2x½": 47, "2x¾": 49,
+      "2x1": 50.2, "2x1¼": 57.8, "2x1½": 52, "2½x2": 105.5
+    }
+  },
+  {
+    name: "UPVC Brass FTA",
+    sizes: { "1/2": 66.7, "3/4": 100, "1": 160, "1¼": 248.9, "1½": 311.8, "2": 521.7, "2½": 993, "3": 1101 }
+  },
+  {
+    name: "UPVC Reducing Brass FTA",
+    sizes: { "¾x½": 71.1, "1x½": 95.6, "1x¾": 106.7 }
+  },
+  {
+    name: "UPVC Reducing Brass Tee",
+    sizes: { "¾x½": 88.9, "1x½": 117.8, "1x¾": 144.4 }
+  },
+  {
+    name: "UPVC Reducing Tee",
+    sizes: {
+      "¾x½": 22.8, "1x½": 32.9, "1x¾": 35.5, "1¼x½": 53.2, "1¼x¾": 69.7, "1¼x1": 55.7,
+      "1½x½": 69.7, "1½x¾": 69.7, "1½x1": 72.2, "1½x1¼": 73.5, "2x½": 96.3, "2x¾": 97.5,
+      "2x1": 103.9, "2x1¼": 103.9, "2x1½": 111.1
+    }
+  },
+  {
+    name: "UPVC Reducing Elbow",
+    sizes: { "¾x½": 24.1, "1x½": 27.9, "1x¾": 32.9 }
+  },
+  {
+    name: "UPVC Brass Elbow",
+    sizes: { "1/2": 68.9, "3/4": 102.2, "1": 200, "¾x½": 73.3, "1x½": 100, "1x¾": 133.3 }
+  },
+  {
+    name: "UPVC Ballvalve (Paras)",
+    sizes: { "1/2": 132, "3/4": 159.5, "1": 240, "1¼": 325, "1½": 460, "2": 710, "2½": 2500, "3": 3600 }
+  }
+],
+      cpvc: [],
+      swr: [],
+      others: []
+    };
+
+    const productList = document.getElementById('product-list');
+    const searchInput = document.getElementById('search');
+    const clearSearchBtn = document.getElementById('clear-search');
+    let currentCategory = 'pvc';
+
+    function displayProducts(category, searchTerm = '') {
+      productList.innerHTML = '';
+      const products = allProducts[category].filter(p =>
+        p.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+
+      products.forEach(product => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+
+        const title = document.createElement('h3');
+        title.textContent = product.name;
+
+        const sizeSelect = document.createElement('select');
+        const sizes = Object.entries(product.sizes);
+        sizes.forEach(([size, price]) => {
+          const option = document.createElement('option');
+          option.value = size;
+          option.textContent = `${size}" - ₹${price}`;
+          sizeSelect.appendChild(option);
+        });
+
+        const addBtn = document.createElement('button');
+        addBtn.textContent = "Add to Cart";
+        addBtn.onclick = () => {
+          const selectedSize = sizeSelect.value;
+          const originalPrice = product.sizes[selectedSize];
+          const qty = parseInt(prompt(`Enter quantity for ${product.name} (${selectedSize}):`, "1"));
+          if (isNaN(qty) || qty <= 0) return alert("Invalid quantity.");
+          const discount = parseFloat(prompt(`Enter discount in % for ${product.name} (${selectedSize}):`, "0"));
+          if (isNaN(discount) || discount < 0 || discount > 100) return alert("Invalid discount.");
+
+          const finalPrice = Math.round(originalPrice * (1 - discount / 100));
+          const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+          const existing = cart.find(item => item.name === product.name && item.size === selectedSize);
+          if (existing) {
+            existing.quantity += qty;
+            existing.discount = discount;
+            existing.price = finalPrice;
+          } else {
+            cart.push({ name: product.name, size: selectedSize, quantity: qty, originalPrice, discount, price: finalPrice });
+          }
+
+          localStorage.setItem("cart", JSON.stringify(cart));
+          alert("Item added to cart!");
+        };
+
+        card.appendChild(title);
+        card.appendChild(sizeSelect);
+        card.appendChild(addBtn);
+        productList.appendChild(card);
+      });
+    }
+
+    displayProducts(currentCategory);
+
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        currentCategory = tab.dataset.cat;
+        displayProducts(currentCategory, searchInput.value);
+      });
+    });
+
+    searchInput.addEventListener('input', () => {
+      const value = searchInput.value.trim();
+      clearSearchBtn.style.display = value ? 'block' : 'none';
+      displayProducts(currentCategory, value);
+    });
+
+    clearSearchBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      clearSearchBtn.style.display = 'none';
+      displayProducts(currentCategory);
+    });
+
+    if (!localStorage.getItem("customerInfo")) {
+      const name = prompt("Enter customer name:");
+      const mobile = prompt("Enter mobile number:");
+      localStorage.setItem("customerInfo", JSON.stringify({ name, mobile }));
+    }
+  </script>
+</body>
+</html>
